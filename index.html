@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/js/bootstrap.bundle.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-csv/1.0.21/jquery.csv.min.js"></script>
+<script src="main.js"></script>
+</head>
+<body>
+<div id="category-card"></div>
+
+<script id="tmpl-category-card" type="text/html">
+<div class="card" style="width: 18rem;">
+  <div class="card-body">
+    <h5 class="card-title"></h5>
+    <h6 class="card-subtitle mb-2 text-muted"></h6>
+    <p class="card-text"></p>
+  </div>
+  <ul class="list-group list-group-flush">
+  </ul>
+</div>
+</script>
+<script>
+read_all_list().then(function(){
+    for (var record of records['action-plan-category']) {
+        var card_dom = $($('#tmpl-category-card').html());
+        $('.card-title', card_dom).text(record.short);
+        $('.card-subtitle', card_dom).text(record.long);
+        card_dom.attr('id', 'category-card-' + record.category_id);
+        $('#category-card').append(card_dom);
+    }
+    for (var record of records['action-plan']) {
+        var card_dom = $('#category-card-' + record.category_id);
+        $('.list-group', card_dom).append($('<li></li>').append($('<a></a>').attr('href', 'plan.html?id=' + record.plan_id).text(record.title)));
+    }
+});
+</script>
+</body>
+</html>
