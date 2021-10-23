@@ -39,6 +39,33 @@
             <div class="card-title">方案資訊</div>
         </div>
         <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3">主責單位</dt>
+                <dd class="col-sm-9" id="assignee"></dd>
+
+                <dt class="col-sm-3">現況與挑戰</dt>
+                <dd class="col-sm-9" id="current-status" style="white-space: pre-wrap"></dd>
+
+                <dt class="col-sm-3">主要目標</dt>
+                <dd class="col-sm-9" id="target" style="white-space: pre-wrap"></dd>
+
+                <dt class="col-sm-3">開放國會原則</dt>
+                <dd class="col-sm-9" id="principal"> </dd>
+
+                <dt class="col-sm-3">延伸行動</dt>
+                <dd class="col-sm-9" id="extend">
+                    <table class="table">
+                        <thead>
+                            <tr></tr>
+                        </thead>
+                        <tbody>
+                        <tr></tr>
+                        </tbody>
+
+                    </table>
+                </dd>
+            </dl>
+
         </div>
     </div>
     <div class="card">
@@ -92,6 +119,21 @@ read_all_list().then(function(){
             return;
         }
         var category = record_find(records['action-plan-category'], {category_id: choose_plan.category_id});
+        var info = record_find(records['action-plan-info'], {'行動代號': plan_id});
+        $('#assignee').text(info['主責單位']);
+        $('#current-status').text(info['現況與挑戰']);
+        $('#target').text(info['主要目標']);
+        for (var p of ['開放國會之原則價值', '便於取得利用的國會資訊', '便於人民參與的國會', '數位化的國會', '國會識讀教育']) {
+        $('#principal').append(
+                $('<p></p>').append($('<input type="checkbox">').prop('readonly', true).prop('checked', info[p] == 'o' ? true : false))
+            .append($('<span></span>').text(p))
+        );
+        }
+        for (var e of ['立法院內部', '修法', '立法', '增列預算']) {
+            $('#extend thead tr').append($('<td></td>').text(e));
+            $('#extend tbody tr').append($('<td></td>').text(info[e] ? 'v' : ''));
+        }
+
         var milestones = record_search(records['action-plan-milestone'], {plan_id: plan_id});
         $('#plan-data').show();
         $('#plan-data h1').text(choose_plan.title);
