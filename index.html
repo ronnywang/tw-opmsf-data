@@ -46,8 +46,19 @@
             <div class="card-title">里程碑</div>
         </div>
         <div class="card-body">
+            <div class="container" id="milestone-pool"></div>
         </div>
     </div>
+    <script id="tmpl-milestone" type="text/html">
+        <div class="row">
+            <div class="col-9 title"></div>
+            <div class="col-3">
+                <span class="date-start"></span>
+                 ~ 
+                <span class="date-end"></span>
+            </div>
+        </div>
+    </script>
     <div class="card">
         <div class="card-header">
             <div class="card-title">相關連結</div>
@@ -81,9 +92,18 @@ read_all_list().then(function(){
             return;
         }
         var category = record_find(records['action-plan-category'], {category_id: choose_plan.category_id});
+        var milestones = record_search(records['action-plan-milestone'], {plan_id: plan_id});
         $('#plan-data').show();
         $('#plan-data h1').text(choose_plan.title);
         $('#plan-data #category').text(category.short + ':' + category.long);
+        for (var milestone of milestones) {
+            var dom = $($('#tmpl-milestone').html());
+            $('.title', dom).text(milestone.title);
+            $('.date-start', dom).text(milestone.start);
+            $('.date-end', dom).text(milestone.end);
+            $('#milestone-pool').append(dom);
+
+        }
 
     } else {
         for (var record of records['action-plan-category']) {
