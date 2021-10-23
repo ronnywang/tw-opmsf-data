@@ -1,4 +1,4 @@
-var list = ['action-plan', 'action-plan-category'];
+var list = ['action-plan', 'action-plan-category', 'action-plan-milestone'];
 var records = {};
 
 var record_search = function(records, cond) {
