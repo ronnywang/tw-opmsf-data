@@ -11,8 +11,52 @@
 <script src="main.js"></script>
 </head>
 <body>
-<div id="category-card"></div>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="index.html">開放國會行動方案</a>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+            <a class="nav-link" href="index.html">行動<span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+            <a class="nav-link" href="https://www.ly.gov.tw/Pages/Detail.aspx?nodeid=44847&pid=207514">原始位置</a>
+            </li>
+        </ul>
+    </div>
+</nav>
 
+
+<div id="plan-data" style="display:none">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="index.html">首頁</a></li>
+            <li class="breadcrumb-item" aria-current="page" id="category">Library</li>
+        </ol>
+    </nav>
+    <h1></h1>
+    <div class="card">
+        <div class="card-header">
+            <div class="card-title">方案資訊</div>
+        </div>
+        <div class="card-body">
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-header">
+            <div class="card-title">里程碑</div>
+        </div>
+        <div class="card-body">
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-header">
+            <div class="card-title">相關連結</div>
+        </div>
+        <div class="card-body">
+        </div>
+    </div>
+</div>
+<div id="category-card"></div>
 <script id="tmpl-category-card" type="text/html">
 <div class="card" style="width: 18rem;">
   <div class="card-body">
@@ -24,18 +68,35 @@
   </ul>
 </div>
 </script>
+
 <script>
 read_all_list().then(function(){
-    for (var record of records['action-plan-category']) {
-        var card_dom = $($('#tmpl-category-card').html());
-        $('.card-title', card_dom).text(record.short);
-        $('.card-subtitle', card_dom).text(record.long);
-        card_dom.attr('id', 'category-card-' + record.category_id);
-        $('#category-card').append(card_dom);
-    }
-    for (var record of records['action-plan']) {
-        var card_dom = $('#category-card-' + record.category_id);
-        $('.list-group', card_dom).append($('<li></li>').append($('<a></a>').attr('href', 'plan.html?id=' + record.plan_id).text(record.title)));
+    var matches = location.href.match(/plan_id=([^&]*)/);
+
+    if (matches) {
+        var plan_id = matches[1];
+        var choose_plan = record_find(records['action-plan'], {plan_id: plan_id});
+        if (!choose_plan) {
+            alert('not found');
+            return;
+        }
+        var category = record_find(records['action-plan-category'], {category_id: choose_plan.category_id});
+        $('#plan-data').show();
+        $('#plan-data h1').text(choose_plan.title);
+        $('#plan-data #category').text(category.short + ':' + category.long);
+
+    } else {
+        for (var record of records['action-plan-category']) {
+            var card_dom = $($('#tmpl-category-card').html());
+            $('.card-title', card_dom).text(record.short);
+            $('.card-subtitle', card_dom).text(record.long);
+            card_dom.attr('id', 'category-card-' + record.category_id);
+            $('#category-card').append(card_dom);
+        }
+        for (var record of records['action-plan']) {
+            var card_dom = $('#category-card-' + record.category_id);
+            $('.list-group', card_dom).append($('<li></li>').append($('<a></a>').attr('href', 'index.html?plan_id=' + record.plan_id).text(record.title)));
+        }
     }
 });
 </script>
