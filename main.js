@@ -1,6 +1,28 @@
 var list = ['action-plan', 'action-plan-category'];
 var records = {};
 
+var record_search = function(records, cond) {
+    var ret = [];
+    for (var record of records) {
+        var miss = false;
+        for (var k in cond) {
+            if (record[k] != cond[k]) {
+                miss = true;
+                break;
+            }
+        }
+        if (miss) {
+            continue;
+        }
+        ret.push(record);
+    }
+    return ret;
+};
+
+var record_find = function(records, cond) {
+    return record_search(records, cond)[0];
+};
+
 var read_all_list = function() {
     var promises = [];
     for (let id of list) {
